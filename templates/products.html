@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Products</title>
+</head>
+<body>
+
+<h2>Product List</h2>
+
+{% for product in products %}
+    <div style="border:1px solid black; padding:10px; margin:10px;">
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description }}</p>
+        <p>Price: ₹{{ product.price }}</p>
+        <p>Stock: {{ product.stock }}</p>
+        <a href="/order/{{ product.id }}/">Buy Now</a>
+    </div>
+{% endfor %}
+
+</body>
+</html>
