@@ -39,9 +39,25 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="#">🛍 MyStore</a>
+    <a class="navbar-brand fw-bold" href="/">🛍 MyStore</a>
+
+    <div class="ms-auto">
+      {% if user.is_authenticated %}
+        <span class="text-white me-3">
+            Welcome, {{ user.username }}
+        </span>
+        <a href="/logout/" class="btn btn-outline-light btn-sm">
+            Logout
+        </a>
+      {% else %}
+        <a href="/login/" class="btn btn-outline-light btn-sm">
+            Login
+        </a>
+      {% endif %}
+    </div>
+
   </div>
 </nav>
 
