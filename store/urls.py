@@ -8,5 +8,5 @@ urlpatterns = [
     path('search/', views.smart_search, name='smart_search'),
     path('recommend/<int:product_id>/', views.recommend_products, name='recommend_products'),
     path('predict-price/', views.predict_price, name='predict_price'),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
+    
 ]
