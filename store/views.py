@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from .models import Product, Order, OrderItem
 
 
+
 # ------------------ PRODUCT LIST ------------------
 
 def product_list(request):
@@ -36,6 +37,9 @@ def place_order(request, product_id):
     )
 
     return redirect('product_list')
+
+@login_required
+def place_order(request, product_id):
 
 
 # ------------------ ORDER HISTORY ------------------
