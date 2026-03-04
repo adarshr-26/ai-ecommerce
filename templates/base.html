@@ -48,9 +48,12 @@
         <span class="text-white me-3">
             Welcome, {{ user.username }}
         </span>
-        <a href="/logout/" class="btn btn-outline-light btn-sm">
-            Logout
-        </a>
+        <form method="post" action="/logout/" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline-light btn-sm">
+        Logout
+    </button>
+</form>
       {% else %}
         <a href="/login/" class="btn btn-outline-light btn-sm">
             Login
