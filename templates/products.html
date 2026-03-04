@@ -1,21 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Products</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-<h2>Product List</h2>
+{% block content %}
+
+<h2 class="mb-4">Our Products</h2>
+
+<div class="row">
 
 {% for product in products %}
-    <div style="border:1px solid black; padding:10px; margin:10px;">
-        <h3>{{ product.name }}</h3>
-        <p>{{ product.description }}</p>
-        <p>Price: ₹{{ product.price }}</p>
-        <p>Stock: {{ product.stock }}</p>
-        <a href="/order/{{ product.id }}/">Buy Now</a>
+  <div class="col-md-4">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <p class="card-text">{{ product.description }}</p>
+        <p><strong>₹{{ product.price }}</strong></p>
+        <p class="text-muted">Stock: {{ product.stock }}</p>
+        <a href="#" class="btn btn-primary w-100">Buy Now</a>
+      </div>
     </div>
+  </div>
 {% endfor %}
 
-</body>
-</html>
+</div>
+
+{% endblock %}>
