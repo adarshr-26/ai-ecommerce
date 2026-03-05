@@ -34,7 +34,7 @@ def place_order(request, product_id):
         price=product.price
     )
 
-    return redirect('product_list')
+    return redirect('store:product_list')
 
 
 # ------------------ ORDER HISTORY ------------------
