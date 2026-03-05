@@ -26,5 +26,6 @@ urlpatterns = [
 
     # Price prediction
     path('api/predict-price/', views.predict_price, name='predict_price'),
+    
 
 ]

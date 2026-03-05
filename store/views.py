@@ -1,5 +1,7 @@
-from sklearn.linear_model import LinearRegression
 import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
@@ -7,10 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login
 from django.contrib.auth.forms import UserCreationForm
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-
-from .models import Product, Order, OrderItem
+from .models import Product, Order, OrderItem, Customer
 
 
 # ------------------ PRODUCT LIST ------------------
@@ -29,6 +28,12 @@ def signup(request):
 
         if form.is_valid():
             user = form.save()
+
+            Customer.objects.create(
+                name=user.username,
+                email=user.email if user.email else f"{user.username}@example.com"
+            )
+
             login(request, user)
             return redirect('store:product_list')
 
@@ -45,9 +50,13 @@ def place_order(request, product_id):
 
     product = get_object_or_404(Product, id=product_id)
 
+    customer, created = Customer.objects.get_or_create(
+        email=request.user.email if request.user.email else f"{request.user.username}@example.com",
+        defaults={'name': request.user.username}
+    )
+
     order = Order.objects.create(
-        customer=request.user,
-        total_price=product.price
+        customer=customer
     )
 
     OrderItem.objects.create(
@@ -57,7 +66,7 @@ def place_order(request, product_id):
         price=product.price
     )
 
-    return redirect('store:product_list')
+    return redirect('store:orders')
 
 
 # ------------------ ORDER HISTORY ------------------
@@ -65,9 +74,27 @@ def place_order(request, product_id):
 @login_required
 def order_history(request):
 
-    orders = Order.objects.filter(customer=request.user)
+    customer, created = Customer.objects.get_or_create(
+        email=request.user.email if request.user.email else f"{request.user.username}@example.com",
+        defaults={'name': request.user.username}
+    )
 
-    return render(request, 'orders.html', {'orders': orders})
+    orders = Order.objects.filter(customer=customer)
+
+    order_data = []
+
+    for order in orders:
+
+        items = OrderItem.objects.filter(order=order)
+
+        total_price = sum(item.price * item.quantity for item in items)
+
+        order_data.append({
+            "order": order,
+            "total_price": total_price
+        })
+
+    return render(request, 'orders.html', {'order_data': order_data})
 
 
 # ------------------ LOGOUT ------------------
@@ -91,7 +118,7 @@ def smart_search(request):
 
     products = Product.objects.all()
 
-    if not products:
+    if not products.exists():
         return JsonResponse({'results': []})
 
     product_list = []
@@ -131,7 +158,7 @@ def recommend_products(request, product_id):
 
     products = Product.objects.all()
 
-    if not products:
+    if not products.exists():
         return JsonResponse({'recommendations': []})
 
     product_list = []
@@ -150,7 +177,6 @@ def recommend_products(request, product_id):
 
     try:
         index = next(i for i, p in enumerate(product_list) if p.id == product_id)
-
     except StopIteration:
         return JsonResponse({'error': 'Product not found'})
 
@@ -180,11 +206,9 @@ def predict_price(request):
     try:
         storage = float(request.GET.get('storage'))
         rating = float(request.GET.get('rating'))
-
     except:
         return JsonResponse({'error': 'Provide storage and rating'})
 
-    # Training sample dataset
     X = np.array([
         [64, 4.0],
         [128, 4.2],

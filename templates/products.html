@@ -7,6 +7,24 @@
 
 <h2 class="mb-4 text-center fw-bold">Our Products</h2>
 
+<!-- AI SMART SEARCH -->
+<div class="row mb-5">
+  <div class="col-md-8 mx-auto text-center">
+
+    <input type="text" id="searchBox" class="form-control mb-2"
+           placeholder="🔎 AI Smart Search Product">
+
+    <button onclick="searchProduct()" class="btn btn-success">
+      Search
+    </button>
+
+  </div>
+</div>
+
+<!-- SEARCH RESULTS -->
+<div id="searchResults" class="row mb-5"></div>
+
+
 <div class="row g-4">
 
 {% for product in products %}
@@ -33,9 +51,17 @@
           Stock: {{ product.stock }}
         </p>
 
-        <a href="{% url 'store:place_order' product.id %}" class="btn btn-primary w-100">
+        <a href="{% url 'store:place_order' product.id %}" class="btn btn-primary w-100 mb-2">
           Buy Now
         </a>
+
+        <!-- PRODUCT RECOMMEND BUTTON -->
+        <button onclick="recommend({{product.id}})" class="btn btn-outline-dark w-100">
+          Recommend Similar
+        </button>
+
+        <!-- RECOMMENDATION RESULTS -->
+        <div id="rec{{product.id}}" class="mt-2 text-start"></div>
 
       </div>
 
@@ -46,5 +72,68 @@
 </div>
 
 </div>
+
+
+<script>
+
+/* AI SMART SEARCH */
+
+function searchProduct(){
+
+let query = document.getElementById("searchBox").value
+
+fetch(`/api/search/?q=${query}`)
+.then(response => response.json())
+.then(data => {
+
+let results = document.getElementById("searchResults")
+results.innerHTML=""
+
+data.results.forEach(product =>{
+
+results.innerHTML += `
+<div class="col-md-4">
+  <div class="card p-3 shadow-sm">
+    <h5>${product.name}</h5>
+    <p>${product.description}</p>
+    <h6 class="text-primary">₹${product.price}</h6>
+  </div>
+</div>
+`
+
+})
+
+})
+
+}
+
+
+
+/* AI PRODUCT RECOMMENDATION */
+
+function recommend(id){
+
+fetch(`/api/recommend/${id}/`)
+.then(response => response.json())
+.then(data =>{
+
+let box = document.getElementById(`rec${id}`)
+box.innerHTML=""
+
+data.recommendations.forEach(p=>{
+
+box.innerHTML += `
+<div class="small text-success">
+⭐ ${p.name} - ₹${p.price}
+</div>
+`
+
+})
+
+})
+
+}
+
+</script>
 
 {% endblock %}

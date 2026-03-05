@@ -1,20 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Orders</title>
+<title>My Orders</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f5f5f5;
+padding:30px;
+}
+
+h1{
+text-align:center;
+}
+
+.order-card{
+background:white;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+box-shadow:0px 2px 10px rgba(0,0,0,0.1);
+}
+
+.order-header{
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.product{
+padding:8px;
+border-bottom:1px solid #eee;
+}
+
+.price{
+color:green;
+font-weight:bold;
+}
+
+</style>
 </head>
+
 <body>
 
-<h2>My Orders</h2>
+<h1>My Orders</h1>
 
-{% for order in orders %}
-    <div style="border:1px solid black; padding:10px; margin:10px;">
-        <p><strong>Order ID:</strong> {{ order.id }}</p>
-        <p><strong>Total Price:</strong> ₹{{ order.total_price }}</p>
-        <p><strong>Date:</strong> {{ order.order_date }}</p>
-    </div>
-{% empty %}
-    <p>No orders yet.</p>
+{% for data in order_data %}
+
+<div class="order-card">
+
+<div class="order-header">
+Order ID: {{ data.order.id }} |
+Date: {{ data.order.created_at }}
+</div>
+
+{% for item in data.order.orderitem_set.all %}
+
+<div class="product">
+Product: <b>{{ item.product.name }}</b><br>
+Quantity: {{ item.quantity }}<br>
+Price: ₹{{ item.price }}
+</div>
+
+{% endfor %}
+
+<div class="price">
+Total Price: ₹{{ order.total_price }}
+</div>
+
+</div>
+
 {% endfor %}
 
 </body>

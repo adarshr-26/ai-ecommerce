@@ -1,5 +1,6 @@
 from django.db import models
 
+# Step 1: Create Models for Customers, Products, Orders, and OrderItems
 
 class Customer(models.Model):
     name = models.CharField(max_length=200)
@@ -31,6 +32,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     quantity = models.IntegerField()
+    price = models.FloatField()
 
     def __str__(self):
         return f"{self.product.name} x {self.quantity}"
