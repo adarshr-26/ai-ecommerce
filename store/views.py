@@ -1,12 +1,15 @@
 from sklearn.linear_model import LinearRegression
 import numpy as np
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login
 from django.contrib.auth.forms import UserCreationForm
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
 from .models import Product, Order, OrderItem
 
 
@@ -88,11 +91,14 @@ def smart_search(request):
 
     products = Product.objects.all()
 
+    if not products:
+        return JsonResponse({'results': []})
+
     product_list = []
     descriptions = []
 
     for product in products:
-        text = product.name + " " + product.description
+        text = (product.name or "") + " " + (product.description or "")
         descriptions.append(text)
         product_list.append(product)
 
@@ -125,15 +131,15 @@ def recommend_products(request, product_id):
 
     products = Product.objects.all()
 
+    if not products:
+        return JsonResponse({'recommendations': []})
+
     product_list = []
     descriptions = []
 
     for product in products:
-
-        text = product.name + " " + product.description
-
+        text = (product.name or "") + " " + (product.description or "")
         descriptions.append(text)
-
         product_list.append(product)
 
     vectorizer = TfidfVectorizer()
@@ -143,11 +149,9 @@ def recommend_products(request, product_id):
     similarity_matrix = cosine_similarity(tfidf_matrix)
 
     try:
-
         index = next(i for i, p in enumerate(product_list) if p.id == product_id)
 
     except StopIteration:
-
         return JsonResponse({'error': 'Product not found'})
 
     similarity_scores = list(enumerate(similarity_matrix[index]))
@@ -178,16 +182,16 @@ def predict_price(request):
         rating = float(request.GET.get('rating'))
 
     except:
-
         return JsonResponse({'error': 'Provide storage and rating'})
 
+    # Training sample dataset
     X = np.array([
-        [64,4.0],
-        [128,4.2],
-        [256,4.5],
-        [512,4.8],
-        [128,3.8],
-        [256,4.3]
+        [64, 4.0],
+        [128, 4.2],
+        [256, 4.5],
+        [512, 4.8],
+        [128, 3.8],
+        [256, 4.3]
     ])
 
     y = np.array([
@@ -201,10 +205,12 @@ def predict_price(request):
 
     model = LinearRegression()
 
-    model.fit(X,y)
+    model.fit(X, y)
 
-    predicted_price = model.predict([[storage,rating]])
+    predicted_price = model.predict([[storage, rating]])
 
     return JsonResponse({
+        'storage': storage,
+        'rating': rating,
         'predicted_price': float(predicted_price[0])
     })
