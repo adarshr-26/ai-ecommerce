@@ -22,8 +22,8 @@
 
         <p class="text-secondary">Stock: {{ product.stock }}</p>
 
-        <a href="#" class="btn btn-primary w-100 mt-2">
-            Buy Now
+        <a href="{% url 'place_order' product.id %}" class="btn btn-primary">
+    Buy Now
         </a>
       </div>
 
