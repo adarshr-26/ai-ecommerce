@@ -65,6 +65,7 @@
         }
     </style>
 </head>
+
 <body>
 
 <div class="login-card">
@@ -72,6 +73,9 @@
 
     <form method="post">
         {% csrf_token %}
+
+        <!-- important for redirect after login -->
+        <input type="hidden" name="next" value="{{ next }}">
 
         <div class="mb-3">
             {{ form.username.label_tag }}
@@ -87,6 +91,7 @@
             Login
         </button>
     </form>
+
 </div>
 
 </body>
