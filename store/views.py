@@ -3,7 +3,8 @@ import numpy as np
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
+from django.contrib.auth.forms import UserCreationForm
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from .models import Product, Order, OrderItem
@@ -14,6 +15,21 @@ from .models import Product, Order, OrderItem
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'products.html', {'products': products})
+
+
+# ------------------ SIGNUP ------------------
+
+def signup(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('store:product_list')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'registration/signup.html', {'form': form})
 
 
 # ------------------ PLACE ORDER ------------------

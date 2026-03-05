@@ -63,6 +63,22 @@
         label {
             margin-top: 10px;
         }
+
+        .signup-link{
+            text-align:center;
+            margin-top:20px;
+        }
+
+        .signup-link a{
+            color:#fff;
+            font-weight:bold;
+            text-decoration:none;
+        }
+
+        .signup-link a:hover{
+            text-decoration:underline;
+        }
+
     </style>
 </head>
 
@@ -91,6 +107,12 @@
             Login
         </button>
     </form>
+
+    <!-- STEP 4 : SIGNUP LINK -->
+    <div class="signup-link">
+        <p>Don't have an account?</p>
+        <a href="{% url 'signup' %}">Create Account 🚀</a>
+    </div>
 
 </div>
 
