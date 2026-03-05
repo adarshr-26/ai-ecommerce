@@ -20,8 +20,7 @@ ALLOWED_HOSTS = ['*']
 
 # APPLICATIONS
 INSTALLED_APPS = [
-    "jazzmin",   
-
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,6 +36,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -165,3 +165,7 @@ JAZZMIN_UI_TWEAKS = {
     "accent": "accent-primary",
     "sidebar": "sidebar-dark-primary",
 }
+
+STATIC_URL = 'static/'
+
+STATIC_ROOT = 'staticfiles'
