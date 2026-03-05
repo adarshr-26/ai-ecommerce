@@ -1,6 +1,6 @@
 from django.db import models
 
-# Step 1: Create Models for Customers, Products, Orders, and OrderItems
+
 
 class Customer(models.Model):
     name = models.CharField(max_length=200)
