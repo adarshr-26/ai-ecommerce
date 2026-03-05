@@ -20,12 +20,15 @@ ALLOWED_HOSTS = ['*']
 
 # APPLICATIONS
 INSTALLED_APPS = [
+    "jazzmin",   
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'store',
 ]
 
@@ -124,3 +127,41 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+JAZZMIN_SETTINGS = {
+    "site_title": "AI Ecommerce Admin",
+    "site_header": "AI Ecommerce",
+    "site_brand": "AI Store",
+    "welcome_sign": "Welcome to AI Store Admin",
+    "copyright": "AI Ecommerce Project",
+}
+
+JAZZMIN_SETTINGS = {
+    "site_title": "AI Store Admin",
+    "site_header": "AI Store Dashboard",
+    "site_brand": "AI Store",
+    "welcome_sign": "Welcome to AI Store Admin",
+    "copyright": "AI Store",
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+
+        "store.Products": "fas fa-box",
+        "store.Orders": "fas fa-shopping-cart",
+        "store.Order items": "fas fa-list",
+    },
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "darkly",
+    "dark_mode_theme": "darkly",
+    "navbar": "navbar-dark",
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
+    "sidebar": "sidebar-dark-primary",
+}
