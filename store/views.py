@@ -1,12 +1,15 @@
 from sklearn.linear_model import LinearRegression
 import numpy as np
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from .models import Product, Order, OrderItem
 
+from .models import Product, Order, OrderItem
 
 
 # ------------------ PRODUCT LIST ------------------
@@ -38,16 +41,13 @@ def place_order(request, product_id):
 
     return redirect('product_list')
 
-@login_required
-def place_order(request, product_id):
 
-
-# ------------------ ORDER HISTORY ------------------
+# ------------------ LOGOUT ------------------
 
 @login_required
-def order_history(request):
-    orders = Order.objects.filter(customer=request.user)
-    return render(request, 'orders.html', {'orders': orders})
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 
 # ------------------ SMART SEARCH ------------------
@@ -90,7 +90,9 @@ def smart_search(request):
 # ------------------ RECOMMENDATION SYSTEM ------------------
 
 def recommend_products(request, product_id):
+
     products = Product.objects.all()
+
     product_list = []
     descriptions = []
 
@@ -113,6 +115,7 @@ def recommend_products(request, product_id):
     similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
 
     results = []
+
     for i, score in similarity_scores[1:4]:  # skip itself
         results.append({
             'id': product_list[i].id,
@@ -123,12 +126,11 @@ def recommend_products(request, product_id):
         })
 
     return JsonResponse({'recommendations': results})
+
+
+# ------------------ PRICE PREDICTION ------------------
+
 def predict_price(request):
-    """
-    Predict price based on simple features:
-    - storage (GB)
-    - rating
-    """
 
     try:
         storage = float(request.GET.get('storage'))
@@ -136,8 +138,7 @@ def predict_price(request):
     except (TypeError, ValueError):
         return JsonResponse({'error': 'Please provide storage and rating as numbers'})
 
-    # Synthetic Training Data
-    # storage (GB), rating
+    # Training Data
     X = np.array([
         [64, 4.0],
         [128, 4.2],
@@ -147,7 +148,6 @@ def predict_price(request):
         [256, 4.3],
     ])
 
-    # Corresponding prices
     y = np.array([
         20000,
         30000,
@@ -157,11 +157,9 @@ def predict_price(request):
         55000,
     ])
 
-    # Train model
     model = LinearRegression()
     model.fit(X, y)
 
-    # Predict
     predicted_price = model.predict([[storage, rating]])
 
     return JsonResponse({
