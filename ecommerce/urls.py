@@ -1,11 +1,7 @@
 from django.contrib import admin
-from django.urls import path
-from django.http import HttpResponse
-
-def home(request):
-    return HttpResponse("AI Ecommerce Website is Working 🚀")
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home),
+    path('', include('store.urls')),   
 ]
