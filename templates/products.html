@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+
+<div class="container mt-5">
 
 <h2 class="mb-4 text-center fw-bold">Our Products</h2>
 
@@ -8,28 +11,39 @@
 
 {% for product in products %}
   <div class="col-md-4">
-    <div class="card shadow-sm p-3">
+    <div class="card shadow-sm p-3 h-100">
 
       <img src="https://via.placeholder.com/300x200"
            class="card-img-top rounded mb-3"
            alt="Product Image">
 
       <div class="card-body text-center">
+
         <h5 class="card-title">{{ product.name }}</h5>
-        <p class="text-muted">{{ product.description }}</p>
 
-        <p class="price">₹{{ product.price }}</p>
+        <p class="text-muted">
+          {{ product.description|default:"No description available" }}
+        </p>
 
-        <p class="text-secondary">Stock: {{ product.stock }}</p>
+        <h5 class="text-primary fw-bold">
+          ₹{{ product.price }}
+        </h5>
 
-        <a href="{% url 'place_order' product.id %}" class="btn btn-primary">
-    Buy Now
+        <p class="text-secondary">
+          Stock: {{ product.stock }}
+        </p>
+
+        <a href="{% url 'store:place_order' product.id %}" class="btn btn-primary w-100">
+          Buy Now
         </a>
+
       </div>
 
     </div>
   </div>
 {% endfor %}
+
+</div>
 
 </div>
 
